@@ -1,4 +1,4 @@
-﻿using SimpleXMLValidatorLibrary;
+using SimpleXMLValidatorLibrary;
 
 class Program
 {
@@ -10,6 +10,13 @@ class Program
 
         List<(string testCase, bool expectedResult)> testCases = new()
         {
+            ("    ",  true),
+            ("",  true),
+            ("apple",  true),
+            ("<Design><Code></Code></Design>",  true),
+            ("<Design><<Code></Code></Design>",  false), // nonsensical "<"
+            ("<Design>><Code></Code></Design>",  false), // nonsensical ">"
+            ("<Design><Cod</Design>",  false), // broken tag
             ("<Design><Code>hello world</Code></Design>",  true),//normal case
             ("<Design><Code>hello world</Code></Design><People>", false),//no closing tag for "People" 
             ("<People><Design><Code>hello world</People></Code></Design>", false),// "/Code" should come before "/People" 
