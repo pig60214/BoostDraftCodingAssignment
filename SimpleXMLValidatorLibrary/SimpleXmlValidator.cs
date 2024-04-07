@@ -7,25 +7,8 @@
         {
             var stack = new Stack<string>();
             var content = xml;
-            var startOfOpeningTag = xml.IndexOf("<", StringComparison.Ordinal);
-            var endOfOpeningTag = xml.IndexOf(">", StringComparison.Ordinal);
-            var startOfClosingTag = xml.LastIndexOf("<", StringComparison.Ordinal);
-            var endOfClosingTag = xml.LastIndexOf(">", StringComparison.Ordinal);
-            if (startOfOpeningTag == -1 || endOfOpeningTag == -1 || startOfClosingTag == -1 || endOfClosingTag == -1)
-            {
-                return false;
-            }
-            var openingTag = GetTag(xml, startOfOpeningTag, endOfOpeningTag);
-            var closingTag = GetTag(xml, startOfClosingTag, endOfClosingTag);
-            if (DeterminePairTags(openingTag, closingTag))
-            {
-                content = content.Substring(endOfOpeningTag + 1, startOfClosingTag - endOfOpeningTag - 1);
-            }
-            else
-            {
-                return false;
-            }
-            
+            if (!DetermineOneRootTag(xml, ref content)) return false;
+
             while (!string.IsNullOrEmpty(content))
             {
                 var start = content.IndexOf("<", StringComparison.Ordinal);
@@ -54,6 +37,30 @@
             }
             
             return stack.Count == 0;
+        }
+
+        private static bool DetermineOneRootTag(string xml, ref string content)
+        {
+            var startOfOpeningTag = xml.IndexOf("<", StringComparison.Ordinal);
+            var endOfOpeningTag = xml.IndexOf(">", StringComparison.Ordinal);
+            var startOfClosingTag = xml.LastIndexOf("<", StringComparison.Ordinal);
+            var endOfClosingTag = xml.LastIndexOf(">", StringComparison.Ordinal);
+            if (startOfOpeningTag == -1 || endOfOpeningTag == -1 || startOfClosingTag == -1 || endOfClosingTag == -1)
+            {
+                return false;
+            }
+            var openingTag = GetTag(xml, startOfOpeningTag, endOfOpeningTag);
+            var closingTag = GetTag(xml, startOfClosingTag, endOfClosingTag);
+            if (DeterminePairTags(openingTag, closingTag))
+            {
+                content = content.Substring(endOfOpeningTag + 1, startOfClosingTag - endOfOpeningTag - 1);
+            }
+            else
+            {
+                return false;
+            }
+
+            return true;
         }
 
         private static bool DeterminePairTags(string openingTag, string closingTag)
