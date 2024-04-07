@@ -17,7 +17,7 @@
             }
             var openingTag = GetTag(xml, startOfOpeningTag, endOfOpeningTag);
             var closingTag = GetTag(xml, startOfClosingTag, endOfClosingTag);
-            if (openingTag.Insert(1, "/") == closingTag)
+            if (DeterminePairTags(openingTag, closingTag))
             {
                 content = content.Substring(endOfOpeningTag + 1, startOfClosingTag - endOfOpeningTag - 1);
             }
@@ -37,7 +37,7 @@
                 var tag = GetTag(content, start, end);
                 if (stack.Count > 0)
                 {
-                    if (stack.Peek().Insert(1, "/") == tag)
+                    if (DeterminePairTags(stack.Peek(), tag))
                     {
                         stack.Pop();
                     }
@@ -55,6 +55,12 @@
             
             return stack.Count == 0;
         }
+
+        private static bool DeterminePairTags(string openingTag, string closingTag)
+        {
+            return openingTag.Insert(1, "/") == closingTag;
+        }
+
         public static bool DetermineXml2(string xml)
         {
             if (string.IsNullOrEmpty(xml)) return true;
