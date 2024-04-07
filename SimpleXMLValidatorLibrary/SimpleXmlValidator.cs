@@ -18,6 +18,10 @@
                 {
                     return false;
                 }
+                if (start == -1 && end == -1)
+                {
+                    break;
+                }
                 var tag = GetTag(content, start, end);
                 if (stack.Count > 0)
                 {
