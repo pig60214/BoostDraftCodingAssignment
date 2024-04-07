@@ -7,10 +7,16 @@
         {
             var stack = new Stack<string>();
             var content = xml;
+            var start = content.IndexOf("<", StringComparison.Ordinal);
+            var end = content.IndexOf(">", StringComparison.Ordinal);
+            if (start == -1 || end == -1)
+            {
+                return false;
+            }
             while (!string.IsNullOrEmpty(content))
             {
-                var start = content.IndexOf("<", StringComparison.Ordinal);
-                var end = content.IndexOf(">", StringComparison.Ordinal);
+                start = content.IndexOf("<", StringComparison.Ordinal);
+                end = content.IndexOf(">", StringComparison.Ordinal);
                 if (end < start)
                 {
                     return false;
