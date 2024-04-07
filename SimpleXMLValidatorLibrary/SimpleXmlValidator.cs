@@ -14,13 +14,13 @@
             {
                 var start = content.IndexOf("<", StringComparison.Ordinal);
                 var end = content.IndexOf(">", StringComparison.Ordinal);
-                if (end < start)
-                {
-                    return false;
-                }
                 if (start == -1 && end == -1)
                 {
                     break;
+                }
+                if (end < start || start == -1 || end == -1)
+                {
+                    return false;
                 }
                 var tag = GetTag(content, start, end);
                 if (stack.Count > 0)

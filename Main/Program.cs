@@ -23,6 +23,9 @@ class Program
             (null,  false), // need root tag
             ("<Design><Code>hello world</Code><Code>hello world</Code></Design>",  true),// normal case: multi-child
             ("<Design>test<Code>hello world</Code>test</Design>",  true),// normal case: tag has text and child-tag
+            ("<Design><</Design>",  false), // nonsensical "<" 
+            ("<Design>></Design>",  false), // nonsensical ">" 
+            ("<Design>><</Design>",  false), // nonsensical "<" and  ">"
         };
         int failedCount = 0;
         foreach ((string input, bool expected) in testCases)
