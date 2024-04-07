@@ -5,6 +5,7 @@
         //Please implement this method
         public static bool DetermineXml(string xml)
         {
+            if (string.IsNullOrEmpty(xml)) return false;
             var stack = new Stack<string>();
             var content = xml;
             if (!DetermineOneRootTag(xml, ref content)) return false;
