@@ -11,6 +11,10 @@
             {
                 var start = content.IndexOf("<", StringComparison.Ordinal);
                 var end = content.IndexOf(">", StringComparison.Ordinal);
+                if (end < start)
+                {
+                    return false;
+                }
                 var tag = GetTag(content, start, end);
                 if (stack.Count > 0)
                 {
