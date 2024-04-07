@@ -7,16 +7,29 @@
         {
             var stack = new Stack<string>();
             var content = xml;
-            var start = content.IndexOf("<", StringComparison.Ordinal);
-            var end = content.IndexOf(">", StringComparison.Ordinal);
-            if (start == -1 || end == -1)
+            var startOfOpeningTag = xml.IndexOf("<", StringComparison.Ordinal);
+            var endOfOpeningTag = xml.IndexOf(">", StringComparison.Ordinal);
+            var startOfClosingTag = xml.LastIndexOf("<", StringComparison.Ordinal);
+            var endOfClosingTag = xml.LastIndexOf(">", StringComparison.Ordinal);
+            if (startOfOpeningTag == -1 || endOfOpeningTag == -1 || startOfClosingTag == -1 || endOfClosingTag == -1)
             {
                 return false;
             }
+            var openingTag = GetTag(xml, startOfOpeningTag, endOfOpeningTag);
+            var closingTag = GetTag(xml, startOfClosingTag, endOfClosingTag);
+            if (openingTag.Insert(1, "/") == closingTag)
+            {
+                content = content.Substring(endOfOpeningTag + 1, startOfClosingTag - endOfOpeningTag - 1);
+            }
+            else
+            {
+                return false;
+            }
+            
             while (!string.IsNullOrEmpty(content))
             {
-                start = content.IndexOf("<", StringComparison.Ordinal);
-                end = content.IndexOf(">", StringComparison.Ordinal);
+                var start = content.IndexOf("<", StringComparison.Ordinal);
+                var end = content.IndexOf(">", StringComparison.Ordinal);
                 if (end < start)
                 {
                     return false;

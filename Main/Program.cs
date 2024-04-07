@@ -19,6 +19,7 @@ class Program
             ("<Design><Cod</Design>",  false), // broken tag
             ("",  false), // need root tag
             ("apple",  false), // need root tag
+            ("<Design></Design><Design></Design>",  false),// need root tag
         };
         int failedCount = 0;
         foreach ((string input, bool expected) in testCases)
