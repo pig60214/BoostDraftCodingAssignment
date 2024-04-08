@@ -1,4 +1,4 @@
-﻿namespace SimpleXMLValidatorLibrary
+namespace SimpleXMLValidatorLibrary
 {
     public class SimpleXmlValidator
     {
@@ -8,7 +8,8 @@
             if (string.IsNullOrEmpty(xml)) return false;
             var stack = new Stack<string>();
             var content = xml;
-            if (!DetermineOneRootTag(xml, ref content)) return false;
+
+            var hasRootTag = false;
 
             while (!string.IsNullOrEmpty(content))
             {
@@ -36,43 +37,25 @@
                 }
                 else
                 {
+                    if (hasRootTag)
+                    {
+                        return false;
+                    }
+
+                    hasRootTag = true;
                     stack.Push(tag);
                 }
                 content = content.Substring(end + 1, content.Length - end - 1);
             }
             
-            return stack.Count == 0;
-        }
-
-        private static bool DetermineOneRootTag(string xml, ref string content)
-        {
-            var startOfOpeningTag = xml.IndexOf("<", StringComparison.Ordinal);
-            var endOfOpeningTag = xml.IndexOf(">", StringComparison.Ordinal);
-            var startOfClosingTag = xml.LastIndexOf("<", StringComparison.Ordinal);
-            var endOfClosingTag = xml.LastIndexOf(">", StringComparison.Ordinal);
-            if (startOfOpeningTag == -1 || endOfOpeningTag == -1 || startOfClosingTag == -1 || endOfClosingTag == -1)
-            {
-                return false;
-            }
-            var openingTag = GetTag(xml, startOfOpeningTag, endOfOpeningTag);
-            var closingTag = GetTag(xml, startOfClosingTag, endOfClosingTag);
-            if (DeterminePairTags(openingTag, closingTag))
-            {
-                content = content.Substring(endOfOpeningTag + 1, startOfClosingTag - endOfOpeningTag - 1);
-            }
-            else
-            {
-                return false;
-            }
-
-            return true;
+            return hasRootTag && stack.Count == 0;
         }
 
         private static bool DeterminePairTags(string openingTag, string closingTag)
         {
             return openingTag.Insert(1, "/") == closingTag;
         }
-
+        
         private static string GetTag(string xml, int start, int end)
         {
             return xml.Substring(start, end - start + 1);
